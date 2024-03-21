@@ -25,7 +25,7 @@ struct ContentView: View {
 
   var body: some View {
     ZStack {
-      Image("earth")
+      Image("Background")
         .resizable()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .gesture(
@@ -99,7 +99,11 @@ struct ContentView: View {
       .position(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height - 100)
     }
     .edgesIgnoringSafeArea(.all)
-    .sheet(isPresented: $isPlanetInfoShown) {
+    .sheet(isPresented: Binding(get: {
+        isPlanetInfoShown
+    }, set: {
+        isPlanetInfoShown = $0
+    })) {
       if let selectedPlanet = selectedPlanet {
         PlanetDetailView(planet: selectedPlanet)
       }
