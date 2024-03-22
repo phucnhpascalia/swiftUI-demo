@@ -84,11 +84,8 @@ struct CustomDialog: View {
         }
         
     func close() {
-        withAnimation(.spring()) {
-            offset = 1000
-            isActive = false
-            print("This is offset: \(offset)")
-        }
+        offset = 1000   
+        isActive = false
     }
 }
 
