@@ -15,9 +15,9 @@ struct ContentView: View {
     @State private var prevOffset: CGPoint = .zero
     @State private var planetPositions: [CGPoint] = []
     @State private var planets: [Planet] = []
-    
-    let backgroundWidth: CGFloat = UIScreen.main.bounds.width * 1.5
-    let backgroundHeight: CGFloat = UIScreen.main.bounds.height * 1.5
+
+    let backgroundWidth: CGFloat = UIScreen.main.bounds.width * 2
+    let backgroundHeight: CGFloat = UIScreen.main.bounds.height * 1
     let numberOfPlanets = 100
     let gridSize: CGFloat = 50
     let planetSizes: [CGSize] = [
@@ -110,10 +110,19 @@ struct ContentView: View {
         }
         .edgesIgnoringSafeArea(.all)
         .onAppear {
+            let width = Int(backgroundWidth)
+            let height = Int(backgroundHeight)
+
+            let map = createParkingMap(width: width, height: height)
+            var usedPositions: Set<[Int]> = []
+
             for _ in 0..<numberOfPlanets {
+                let position = generateUniquePosition(map: map, usedPositions: &usedPositions)
+                let point = CGPoint(x: position[0], y: position[1])
                 let randomSize = planetSizes.randomElement()!
 
-                planets.append(Planet(name: "This is Demo", imageName: ["post1","post2", "post3", "post4", "post5"].randomElement()!, position: generateUniquePosition(), size: randomSize))                }
+                planets.append(Planet(name: "This is Demo", imageName: ["post1","post2", "post3", "post4", "post5"].randomElement()!, position: point, size: randomSize))
+            }
         }
     }
     func adjustedPosition(for position: CGPoint, with offset: CGSize) -> CGPoint {
@@ -124,18 +133,46 @@ struct ContentView: View {
         zoomScale = max(min(scale, 5), 1)
     }
 
-    func generateUniquePosition() -> CGPoint {
-        var newPosition: CGPoint
+    func generateUniquePosition(map: [Int: [Int: [Int]]], usedPositions: inout Set<[Int]>) -> [Int] {
+        var position: [Int] = []
+
         repeat {
-            newPosition = CGPoint(x: .random(in: 0..<backgroundWidth), y: .random(in: 0..<backgroundHeight))
-        } while planetPositions.contains { existingPosition in
-            let distanceX = abs(existingPosition.x - newPosition.x)
-            let distanceY = abs(existingPosition.y - newPosition.y)
-            return distanceX < gridSize && distanceY < gridSize
+            position = getRandomParkingSpace(parkingMap: map)
+        } while usedPositions.contains(position)
+
+        usedPositions.insert(position)
+        return map[position[0]]![position[1]]!
+    }
+
+
+    func createParkingMap(width: Int, height: Int) -> [Int: [Int: [Int]]] {
+        let size = Int(gridSize)
+        let rows = height / size
+        let cols = width / size
+
+        var parkingMap = [Int: [Int: [Int]]]()
+
+        for i in 0..<rows {
+            for j in 0..<cols {
+                let x = j * size
+                let y = i * size
+
+                if parkingMap[i] == nil {
+                    parkingMap[i] = [Int: [Int]]()
+                }
+                parkingMap[i]?[j] = [x, y]
+            }
         }
 
-        planetPositions.append(newPosition)
-        return newPosition
+        return parkingMap
+    }
+
+    func getRandomParkingSpace(parkingMap: [Int: [Int: [Int]]]) -> [Int] {
+        let randRow = Int.random(in: 0..<parkingMap.count)
+        let row = Array(parkingMap.keys)[randRow]
+        let randCol = Int.random(in: 0..<parkingMap[row]!.count)
+
+        return [randRow, randCol]
     }
 }
 struct Planet: Identifiable, Hashable {
