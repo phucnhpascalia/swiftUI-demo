@@ -32,17 +32,7 @@ struct ContentView: View {
             Image("Background")
                 .resizable()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .gesture(
-                    DragGesture()
-                        .onChanged { value in
-                            dragOffset = value.translation
-                        }
-                        .onEnded { _ in
-                            prevOffset.x += dragOffset.width
-                            prevOffset.y += dragOffset.height
-                            dragOffset = .zero
-                        }
-                )
+                .gesture(handleDragGesture(zoomScale: zoomScale))
                 .gesture(
                     MagnificationGesture()
                         .onChanged { value in
@@ -53,49 +43,47 @@ struct ContentView: View {
                 .animation(.easeInOut(duration: 0.5), value: zoomScale)
 
             ForEach(planets, id: \.self) { planet in
-                    Image(planet.imageName)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: planet.size.width, height: planet.size.height)
-                        .position(
-                            CGPoint(
-                                x: planet.position.x + dragOffset.width + prevOffset.x,
-                                y: planet.position.y + dragOffset.height + prevOffset.y
-                            )
+                Image(planet.imageName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: planet.size.width, height: planet.size.height)
+                    .position(
+                        CGPoint(
+                            x: planet.position.x + dragOffset.width + prevOffset.x,
+                            y: planet.position.y + dragOffset.height + prevOffset.y
                         )
-                        .gesture(
-                            TapGesture()
-                                .onEnded {
-                                    selectedPlanet = planet
-                                    isPlanetInfoShown = true
-                                }
-                        )
-                        .scaleEffect(zoomScale)
-                        .animation(.easeInOut(duration: 0.5), value: zoomScale)
+                    )
+                    .gesture(handleDragGesture())
+                    .onTapGesture {
+                        selectedPlanet = planet
+                        isPlanetInfoShown = true
+                    }
+                    .scaleEffect(zoomScale)
+                    .animation(.easeInOut(duration: 0.5), value: zoomScale)
             }
             VStack {
                 HStack {
-                    Button(action: {
-                        setZoomScale(zoomScale - 1)
-                    }) {
-                        Image(systemName: "minus.magnifyingglass")
-                            .font(.title)
-                            .foregroundColor(.gray)
-                            .clipShape(Circle())
-                    }
+                    Button(
+                        action: { setZoomScale(zoomScale - 1) },
+                        label: {
+                            Image(systemName: "minus.magnifyingglass")
+                                .font(.title)
+                                .foregroundColor(.gray)
+                                .clipShape(Circle())
+                        })
                     Slider(value: $zoomScale, in: 1...5, step: 0.1)
                         .frame(width: 150)
                         .accessibilityAction {
                             print("Zoom scale: \(zoomScale)")
                         }
-                    Button(action: {
-                        setZoomScale(zoomScale + 1)
-                    }) {
-                        Image(systemName: "plus.magnifyingglass")
-                            .font(.title)
-                            .foregroundColor(.gray)
-                            .clipShape(Circle())
-                    }
+                    Button(
+                        action: { setZoomScale(zoomScale + 1) },
+                        label: {
+                            Image(systemName: "plus.magnifyingglass")
+                                .font(.title)
+                                .foregroundColor(.gray)
+                                .clipShape(Circle())
+                        })
                 }
                 .padding([.leading, .trailing], 16)
                 .overlay(
@@ -105,7 +93,9 @@ struct ContentView: View {
             }
             .position(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height - 100)
             if isPlanetInfoShown {
-                CustomDialog(isActive: $isPlanetInfoShown, title: selectedPlanet?.name ?? "default", message: "haha", buttonTitle: "Save", action: {})
+                CustomDialog(
+                    isActive: $isPlanetInfoShown, title: selectedPlanet?.name ?? "default",
+                    message: "haha", buttonTitle: "Save", action: {})
             }
         }
         .edgesIgnoringSafeArea(.all)
@@ -121,19 +111,40 @@ struct ContentView: View {
                 let point = CGPoint(x: position[0], y: position[1])
                 let randomSize = planetSizes.randomElement()!
 
-                planets.append(Planet(name: "This is Demo", imageName: ["post1","post2", "post3", "post4", "post5"].randomElement()!, position: point, size: randomSize))
+                planets.append(
+                    Planet(
+                        name: "This is Demo",
+                        imageName: ["post1", "post2", "post3", "post4", "post5"].randomElement()!,
+                        position: point, size: randomSize))
             }
         }
     }
     func adjustedPosition(for position: CGPoint, with offset: CGSize) -> CGPoint {
-      return CGPoint(x: position.x + offset.width, y: position.y + offset.height)
+        return CGPoint(x: position.x + offset.width, y: position.y + offset.height)
     }
 
     func setZoomScale(_ scale: CGFloat) {
         zoomScale = max(min(scale, 5), 1)
     }
+    func handleDragGesture(zoomScale: CGFloat = 1) -> some Gesture {
+        DragGesture()
+            .onChanged { value in
+                let backgroundScale = (zoomScale - 1) * 0.1 + 1
+                dragOffset = CGSize(
+                    width: value.translation.width / zoomScale * backgroundScale,
+                    height: value.translation.height / zoomScale * backgroundScale)
+            }
+            .onEnded { _ in
+                prevOffset.x += dragOffset.width
+                prevOffset.y += dragOffset.height
+                dragOffset = .zero
+            }
+    }
 
-    func generateUniquePosition(map: [Int: [Int: [Int]]], usedPositions: inout Set<[Int]>) -> [Int] {
+    func generateUniquePosition(
+        map: [Int: [Int: [Int]]],
+        usedPositions: inout Set<[Int]>
+    ) -> [Int] {
         var position: [Int] = []
 
         repeat {
@@ -143,7 +154,6 @@ struct ContentView: View {
         usedPositions.insert(position)
         return map[position[0]]![position[1]]!
     }
-
 
     func createParkingMap(width: Int, height: Int) -> [Int: [Int: [Int]]] {
         let size = Int(gridSize)
@@ -181,11 +191,11 @@ struct Planet: Identifiable, Hashable {
     let imageName: String
     let position: CGPoint
     let size: CGSize
-    
+
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
-    
+
     static func == (lhs: Planet, rhs: Planet) -> Bool {
         return lhs.id == rhs.id
     }
@@ -193,7 +203,7 @@ struct Planet: Identifiable, Hashable {
 
 struct PlanetDetailView: View {
     let planet: Planet
-    
+
     var body: some View {
         VStack {
             Text(planet.name)
