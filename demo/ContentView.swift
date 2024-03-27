@@ -18,7 +18,7 @@ struct ContentView: View {
 
     let backgroundWidth: CGFloat = UIScreen.main.bounds.width * 2
     let backgroundHeight: CGFloat = UIScreen.main.bounds.height * 1
-    let numberOfPlanets = 100
+    let numberOfPlanets = 20
     let gridSize: CGFloat = 50
     let planetSizes: [CGSize] = [
         CGSize(width: 40, height: 40),
@@ -105,7 +105,7 @@ struct ContentView: View {
             }
             .position(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height - 100)
             if isPlanetInfoShown {
-                CustomDialog(isActive: $isPlanetInfoShown, title: selectedPlanet?.name ?? "default", message: "haha", buttonTitle: "Save", action: {})
+                CustomDialog(isActive: $isPlanetInfoShown, title: selectedPlanet?.name ?? "default", message: "haha", image: "thumbnail")
             }
         }
         .edgesIgnoringSafeArea(.all)
