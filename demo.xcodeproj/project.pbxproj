@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D921D882BB426AE002A4BAD /* NavigatorBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D921D872BB426AE002A4BAD /* NavigatorBar.swift */; };
 		604F67262BAD5C17006EBFD6 /* CustomDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604F67252BAD5C17006EBFD6 /* CustomDialog.swift */; };
 		E3F5BFE02BA92D0600A5EF54 /* demoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3F5BFDF2BA92D0600A5EF54 /* demoApp.swift */; };
 		E3F5BFE22BA92D0600A5EF54 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3F5BFE12BA92D0600A5EF54 /* ContentView.swift */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4D921D872BB426AE002A4BAD /* NavigatorBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigatorBar.swift; sourceTree = "<group>"; };
 		604F67252BAD5C17006EBFD6 /* CustomDialog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomDialog.swift; sourceTree = "<group>"; };
 		E3F5BFDC2BA92D0600A5EF54 /* demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3F5BFDF2BA92D0600A5EF54 /* demoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = demoApp.swift; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 				E3F5BFE12BA92D0600A5EF54 /* ContentView.swift */,
 				E3F5BFE32BA92D0700A5EF54 /* Assets.xcassets */,
 				E3F5BFE52BA92D0700A5EF54 /* Preview Content */,
+				4D921D872BB426AE002A4BAD /* NavigatorBar.swift */,
 			);
 			path = demo;
 			sourceTree = "<group>";
@@ -141,6 +144,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E3F5BFE22BA92D0600A5EF54 /* ContentView.swift in Sources */,
+				4D921D882BB426AE002A4BAD /* NavigatorBar.swift in Sources */,
 				604F67262BAD5C17006EBFD6 /* CustomDialog.swift in Sources */,
 				E3F5BFE02BA92D0600A5EF54 /* demoApp.swift in Sources */,
 			);

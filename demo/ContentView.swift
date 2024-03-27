@@ -61,6 +61,7 @@ struct ContentView: View {
                     .scaleEffect(zoomScale)
                     .animation(.easeInOut(duration: 0.5), value: zoomScale)
             }
+            NavigatorBar()
             VStack {
                 HStack {
                     Button(
