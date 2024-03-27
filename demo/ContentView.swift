@@ -132,15 +132,15 @@ struct ContentView: View {
     }
 
     func generateNoise(value: CGFloat) -> Int {
-        let diff = (gridSize - value) / 2
-        return Int.random(in: -Int(diff)...Int(diff))
+        let diff = Int((gridSize - value) / 2)
+        return Int.random(in: -diff...diff)
     }
 
     func generateUniquePosition(map: inout [Int]) -> [Int] {
-        let slot = map.removeFirst()
+        let position = map.removeFirst()
         let totalCols = Int(backgroundWidth / gridSize)
-        let x = slot % totalCols
-        let y = slot / totalCols
+        let x = position % totalCols
+        let y = position / totalCols
         print("x: \(x), y: \(y)")
         return [x * Int(gridSize), y * Int(gridSize)]
     }
